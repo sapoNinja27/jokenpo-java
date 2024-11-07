@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "com.joao.ronzani.jokenpo";
+option java_outer_classname = "JokenpoProto";
+
+service JokenpoService {
+  rpc PlayRound (PlayRequest) returns (PlayResponse);
+}
+
+message PlayRequest {
+  string player_id = 1;
+  string move = 2; // "rock", "paper", or "scissors"
+}
+
+message PlayResponse {
+  string result = 1; // "win", "lose", or "draw"
+  string message = 2; // e.g., "Player 1 wins with rock against scissors."
+}
