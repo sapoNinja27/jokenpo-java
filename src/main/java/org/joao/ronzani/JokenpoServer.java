@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 public class JokenpoServer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -34,23 +37,12 @@ public class JokenpoServer {
             observers.put(player.getNome(), responseObserver);
 
             if (moves.size() == 2) {
-//                String[] players = moves.keySet().toArray(new String[0]);
-//                Jokenpo winner = Jokenpo.validateWin(moves.get(0).getJogada(), moves.get(1).getJogada());
-//                Player loser = moves.stream().filter(p ->{
-//                    return p.getJogada()
-//                })
-//                String resultMessage = Jokenpo.winMessage(winner, players[1]);
-//
-//                for (String player : players) {
-//                    JokenpoProto.PlayResponse response = JokenpoProto.PlayResponse.newBuilder()
-//                            .setResult(player.equals(players[0]) ? "win" : "lose")  // ajustar conforme necessário
-//                            .setMessage(resultMessage)
-//                            .build();
-//                    observers.get(player).onNext(response);
-//                    observers.get(player).onCompleted();  // Chama onCompleted para cada observer
-//                }
+                Player winner = Jokenpo.validateWin(moves.get(0), moves.get(1));
 
-                // Limpa os mapas para a próxima rodada
+                JokenpoProto.PlayResponse response = returnMessage(player, winner);
+                observers.get(player).onNext(response);
+                observers.get(player).onCompleted();
+
                 moves.clear();
                 observers.clear();
             } else {
@@ -58,19 +50,29 @@ public class JokenpoServer {
             }
         }
 
-//        private String determineWinner(String player1, String player2) {
-//            String move1 = moves.get(player1);
-//            String move2 = moves.get(player2);
-//            if (move1.equals(move2)) {
-//                return "It's a draw!";
-//            }
-//            if ((move1.equals("rock") && move2.equals("scissors")) ||
-//                    (move1.equals("scissors") && move2.equals("paper")) ||
-//                    (move1.equals("paper") && move2.equals("rock"))) {
-//                return String.format("Player %s wins with %s against %s", player1, move1, move2);
-//            } else {
-//                return String.format("Player %s wins with %s against %s", player2, move2, move1);
-//            }
-//        }
+        private JokenpoProto.PlayResponse returnMessage(Player player, Player winner) {
+            String result = "empate";
+            String message = "portanto não há vencedor";
+            if (nonNull(winner)) {
+                Player loser = moves
+                        .stream()
+                        .filter(p -> !JokenpoRaw.from(p.getJogada()).equals(winner))
+                        .findFirst()
+                        .orElse(moves.get(0));
+                String resultMessage = Jokenpo.winMessage(winner, loser.getJogada());
+                result = player.equals(loser) ? "perdeu" : "venceu";
+                message = String.format("%s, logo, o jogador %s venceu", resultMessage, moves
+                        .stream()
+                        .filter(p -> JokenpoRaw.from(p.getJogada()).equals(winner))
+                        .findFirst()
+                        .map(win -> win.getNome())
+                        .orElse(""));
+            }
+
+            return JokenpoProto.PlayResponse.newBuilder()
+                    .setResult(result)
+                    .setMessage(message)
+                    .build();
+        }
     }
 }

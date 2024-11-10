@@ -25,24 +25,24 @@ public enum Jokenpo {
         }
         throw new IllegalArgumentException("Nome inválido para Jokenpo: " + name);
     }
-    public static JokenpoRaw validateWin(Jokenpo p1, Jokenpo p2) {
+    public static Player validateWin(Player p1, Player p2) {
         if (Arrays
-                .stream(p1.strongAt)
+                .stream(p1.getJogada().strongAt)
                 .anyMatch(jokenpoRaw -> jokenpoRaw.toString()
                         .equals(p2.toString()))) {
-            return JokenpoRaw.from(p1);
+            return p1;
         }
         if (Arrays
-                .stream(p2.strongAt)
+                .stream(p2.getJogada().strongAt)
                 .anyMatch(jokenpoRaw -> jokenpoRaw.toString()
                         .equals(p1.toString()))) {
-            return JokenpoRaw.from(p2);
+            return p2;
         }
         return null;
     }
 
-    public static String winMessage(Jokenpo winner, Jokenpo loser) {
-        return String.format("%s %s s%", winner.nome, getAtaque(winner, loser), loser.nome);
+    public static String winMessage(Player winner, Jokenpo loser) {
+        return String.format("%s %s s%", winner.getJogada().nome, getAtaque(winner.getJogada(), loser), loser.nome);
     }
 
     private static String getAtaque(Jokenpo winner, Jokenpo loser) {
