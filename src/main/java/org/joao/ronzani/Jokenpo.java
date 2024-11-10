@@ -106,14 +106,3 @@ public enum Jokenpo {
     }
 }
 
-enum JokenpoRaw {
-    PEDRA,
-    LAGARTO,
-    SPOCK,
-    TESOURA,
-    PAPEL;
-
-    public static JokenpoRaw from(@Nonnull Jokenpo jkp) {
-        return JokenpoRaw.valueOf(jkp.name());
-    }
-}
