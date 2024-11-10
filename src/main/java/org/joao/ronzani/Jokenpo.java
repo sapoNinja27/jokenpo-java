@@ -41,7 +41,7 @@ public enum Jokenpo {
     }
 
     public static String winMessage(Player winner, Jokenpo loser) {
-        return String.format("%s %s %s", winner.getJogada().nome, getAtaque(winner.getJogada(), loser), loser.nome);
+        return String.format("%s %s %s", winner.getJogada().nome, getAtaque(winner.getJogada(), loser), loser.nome.toLowerCase());
     }
 
     private static String getAtaque(Jokenpo winner, Jokenpo loser) {
