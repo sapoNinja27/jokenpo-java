@@ -6,7 +6,9 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JokenpoServer {
@@ -22,19 +24,22 @@ public class JokenpoServer {
     }
 
     static class JokenpoServiceImpl extends JokenpoServiceGrpc.JokenpoServiceImplBase {
-        private final Map<String, String> moves = new HashMap<>();
+        private final List<Player> moves = new ArrayList<>();
         private final Map<String, StreamObserver<JokenpoProto.PlayResponse>> observers = new HashMap<>();
 
         @Override
         public void playRound(JokenpoProto.PlayRequest request, StreamObserver<JokenpoProto.PlayResponse> responseObserver) {
-            String playerId = request.getPlayerId();
-            String move = request.getMove().toLowerCase();
-            moves.put(playerId, move);
-            observers.put(playerId, responseObserver);
+            Player player = new Player(request.getPlayerId(), Jokenpo.fromName(request.getMove()));
+            moves.add(player);
+            observers.put(player.getNome(), responseObserver);
 
             if (moves.size() == 2) {
                 String[] players = moves.keySet().toArray(new String[0]);
-                String resultMessage = determineWinner(players[0], players[1]);
+                Jokenpo winner = Jokenpo.validateWin(moves.get(0).getJogada(), moves.get(1).getJogada());
+                Player loser = moves.stream().filter(p ->{
+                    return p.getJogada()
+                })
+                String resultMessage = Jokenpo.winMessage(winner, players[1]);
 
                 for (String player : players) {
                     JokenpoProto.PlayResponse response = JokenpoProto.PlayResponse.newBuilder()
