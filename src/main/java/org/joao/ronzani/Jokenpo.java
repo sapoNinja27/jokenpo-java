@@ -1,9 +1,7 @@
 package org.joao.ronzani;
 
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 @AllArgsConstructor
@@ -14,35 +12,36 @@ public enum Jokenpo {
     TESOURA(convert(JokenpoRaw.PAPEL, JokenpoRaw.LAGARTO), "Tesoura"),
     PAPEL(convert(JokenpoRaw.PEDRA, JokenpoRaw.SPOCK), "Papel");
 
-    private JokenpoRaw[] strongAt;
-    private String nome;
+    private final JokenpoRaw[] strongAt;
+    private final String nome;
 
     public static Jokenpo fromName(String name) {
         for (Jokenpo jokenpo : Jokenpo.values()) {
-            if (jokenpo.nome.equalsIgnoreCase(name)) {
+            if (jokenpo.nome.equalsIgnoreCase(name) || jokenpo.name().equalsIgnoreCase(name)) {
                 return jokenpo;
             }
         }
         throw new IllegalArgumentException("Nome inválido para Jokenpo: " + name);
     }
+
     public static Player validateWin(Player p1, Player p2) {
         if (Arrays
                 .stream(p1.getJogada().strongAt)
                 .anyMatch(jokenpoRaw -> jokenpoRaw.toString()
-                        .equals(p2.toString()))) {
+                        .equals(p2.getJogada().toString()))) {
             return p1;
         }
         if (Arrays
                 .stream(p2.getJogada().strongAt)
                 .anyMatch(jokenpoRaw -> jokenpoRaw.toString()
-                        .equals(p1.toString()))) {
+                        .equals(p1.getJogada().toString()))) {
             return p2;
         }
         return null;
     }
 
     public static String winMessage(Player winner, Jokenpo loser) {
-        return String.format("%s %s s%", winner.getJogada().nome, getAtaque(winner.getJogada(), loser), loser.nome);
+        return String.format("%s %s %s", winner.getJogada().nome, getAtaque(winner.getJogada(), loser), loser.nome);
     }
 
     private static String getAtaque(Jokenpo winner, Jokenpo loser) {

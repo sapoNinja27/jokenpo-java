@@ -40,9 +40,10 @@ public class JokenpoServer {
                 Player winner = Jokenpo.validateWin(moves.get(0), moves.get(1));
 
                 JokenpoProto.PlayResponse response = returnMessage(player, winner);
-                observers.get(player).onNext(response);
-                observers.get(player).onCompleted();
-
+                for (Player p: moves) {
+                    observers.get(p.getNome()).onNext(response);
+                    observers.get(p.getNome()).onCompleted();
+                }
                 moves.clear();
                 observers.clear();
             } else {
@@ -52,21 +53,16 @@ public class JokenpoServer {
 
         private JokenpoProto.PlayResponse returnMessage(Player player, Player winner) {
             String result = "empate";
-            String message = "portanto não há vencedor";
+            String message = "Não há vencedor";
             if (nonNull(winner)) {
                 Player loser = moves
                         .stream()
-                        .filter(p -> !JokenpoRaw.from(p.getJogada()).equals(winner))
+                        .filter(p -> !p.equals(winner))
                         .findFirst()
                         .orElse(moves.get(0));
                 String resultMessage = Jokenpo.winMessage(winner, loser.getJogada());
                 result = player.equals(loser) ? "perdeu" : "venceu";
-                message = String.format("%s, logo, o jogador %s venceu", resultMessage, moves
-                        .stream()
-                        .filter(p -> JokenpoRaw.from(p.getJogada()).equals(winner))
-                        .findFirst()
-                        .map(win -> win.getNome())
-                        .orElse(""));
+                message = String.format("%s, logo, o jogador %s venceu", resultMessage, winner.getNome());
             }
 
             return JokenpoProto.PlayResponse.newBuilder()
