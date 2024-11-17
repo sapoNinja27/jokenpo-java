@@ -62,7 +62,7 @@ public class JokenpoServer {
                         .orElse(moves.get(0));
                 String resultMessage = Jokenpo.winMessage(winner, loser.getJogada());
                 result = player.equals(loser) ? "perdeu" : "venceu";
-                message = String.format("%s, logo, o jogador %s venceu", resultMessage, winner.getNome());
+                message = String.format("%s. Jogador %s venceu!", resultMessage, winner.getNome());
             }
 
             return JokenpoProto.PlayResponse.newBuilder()

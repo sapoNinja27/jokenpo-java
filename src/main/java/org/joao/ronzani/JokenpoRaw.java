@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 
 public enum JokenpoRaw {
     PEDRA,
-    LAGARTO,
-    SPOCK,
+    PAPEL,
     TESOURA,
-    PAPEL;
+    LAGARTO,
+    SPOCK;
 
     public static JokenpoRaw from(@Nonnull Jokenpo jkp) {
         return JokenpoRaw.valueOf(jkp.name());

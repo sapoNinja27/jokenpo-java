@@ -21,8 +21,22 @@ public class JokenpoHost {
         System.out.print("Digite seu ID de jogador: ");
         String playerId = scanner.nextLine();
 
-        System.out.printf("Escolha sua jogada (%s): ", Arrays.toString(JokenpoRaw.values()));
-        String move = scanner.nextLine().toLowerCase();
+        String move = null;
+        boolean validMove = false;
+
+        while (!validMove) {
+            System.out.printf("Escolha sua jogada (%s): ", Arrays.toString(JokenpoRaw.values()));
+            move = scanner.nextLine().toLowerCase();
+
+            String finalMove = move;
+            validMove = Arrays.stream(JokenpoRaw.values())
+                    .map(Enum::name)
+                    .anyMatch(valid -> valid.equalsIgnoreCase(finalMove));
+
+            if (!validMove) {
+                System.out.println("Jogada inválida! Tente novamente.");
+            }
+        }
 
         JokenpoProto.PlayRequest request = JokenpoProto.PlayRequest.newBuilder()
                 .setPlayerId(playerId)
@@ -31,8 +45,7 @@ public class JokenpoHost {
 
         try {
             JokenpoProto.PlayResponse response = stub.playRound(request);
-            System.out.println("Resultado: " + response.getResult());
-            System.out.println("Mensagem: " + response.getMessage());
+            System.out.println("Resultado: " + response.getMessage());
         } catch (Exception e) {
             System.err.println("Erro ao se comunicar com o servidor: " + e.getMessage());
         }
