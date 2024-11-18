@@ -53,7 +53,7 @@ public class JokenpoServer {
 
         private JokenpoProto.PlayResponse returnMessage(Player player, Player winner) {
             String result = "empate";
-            String message = "Não há vencedor";
+            String message = "Empate!";
             if (nonNull(winner)) {
                 Player loser = moves
                         .stream()

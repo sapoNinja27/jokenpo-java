@@ -9,10 +9,10 @@ service JokenpoService {
 
 message PlayRequest {
   string player_id = 1;
-  string move = 2; // "rock", "paper", or "scissors"
+  string move = 2;
 }
 
 message PlayResponse {
-  string result = 1; // "win", "lose", or "draw"
-  string message = 2; // e.g., "Player 1 wins with rock against scissors."
+  string result = 1;
+  string message = 2;
 }
