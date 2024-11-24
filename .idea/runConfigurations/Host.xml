@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Host" type="CompoundRunConfigurationType">
+    <toRun name="JokenpoHost Two" type="Application" />
+    <toRun name="JokenpoHost one" type="Application" />
+    <toRun name="Server" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
